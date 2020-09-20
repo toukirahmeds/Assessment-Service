@@ -13,7 +13,7 @@ export class Choice {
     @Column()
     choice: string;
 
-    @Field(() => String)
-    @ManyToOne(type => Question, question => question.id)
-    question: string;
+    @Field(() => Question)
+    @ManyToOne(type => Question, question => question.choiceOptions)
+    question: Question;
 }

@@ -1,6 +1,7 @@
 import "reflect-metadata";
 import {ApolloServer} from "apollo-server";
 import { QuestionResolver } from "./resolvers/question/resolver";
+import { AssessmentResolver } from "./resolvers/assessment/resolver";
 import { buildSchema } from "type-graphql";
 import { GQLContext } from "./models/gqlContext";
 import { getDbConnection } from "./utils/db-helper";
@@ -10,7 +11,7 @@ async function runServer() {
     let schema;
     try {
         schema = await buildSchema({
-            resolvers: [QuestionResolver]
+            resolvers: [QuestionResolver, AssessmentResolver]
         });
     } catch(error) {
         console.error(error);

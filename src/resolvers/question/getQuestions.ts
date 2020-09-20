@@ -1,5 +1,5 @@
 import { GQLContext } from "../../models/gqlContext";
-import {Question} from "../../entity/Question";
+import { Question } from "../../entity/Question";
 
 /**
  * Get all the questions
@@ -11,7 +11,8 @@ export async function getQuestions(
 ): Promise<Question[]> {
     try {
         return await context.dbConnection.getRepository(Question).createQueryBuilder("question")
-            .leftJoinAndSelect("question.nestedQuestion", "nestedQuestion").getMany();
+            .leftJoinAndSelect("question.nestedQuestion", "nestedQuestion")
+            .leftJoinAndSelect("question.choiceOptions", "choiceOptions").getMany();
     } catch(error) {
         throw error;
     }

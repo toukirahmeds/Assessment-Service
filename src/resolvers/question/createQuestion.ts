@@ -30,6 +30,15 @@ export async function createQuestion(
         throw new Error("Mutiple/Single Choice question must have 'choiceOptions'");
     }
 
+    if(question.type === QuestionType.MultipleChoice || question.type === QuestionType.SingleChoice) {
+        question.choiceOptions = inputData.choiceOptions.map((option: string) => {
+            const choice = new Choice();
+            choice.choice = option;
+            choice.question = question;
+            return choice;
+        });
+    }
+
     try {
         await context.dbConnection.transaction(async (transactionManager: EntityManager) => {
             // Save the nested question if type is TrueFalse
@@ -38,20 +47,16 @@ export async function createQuestion(
                 nestedQuestion.question = inputData.nestedQuestion;
                 nestedQuestion.type = QuestionType.TextInput;
                 await transactionManager.save(nestedQuestion);
+                
+                // set the nestedQuestion field in the question modal.
                 question.nestedQuestion = nestedQuestion;
             }
 
             // Save the question;
-            const q = await transactionManager.save(question);
+            await transactionManager.save(question);
 
             // Save the multiple choices if question type is MultipleChoice or SingleChoice
             if(question.type === QuestionType.MultipleChoice || question.type === QuestionType.SingleChoice) {
-                question.choiceOptions = inputData.choiceOptions.map((option: string) => {
-                    const choice = new Choice();
-                    choice.choice = option;
-                    choice.question = q.id;
-                    return choice;
-                });
                 await transactionManager.save(question.choiceOptions);
             }
             

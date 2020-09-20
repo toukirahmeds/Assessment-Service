@@ -6,18 +6,27 @@ import { CreateQuestionInput } from "../../models/question/createQuestionInput";
 import { createQuestion } from "./createQuestion";
 import { getQuestions } from "./getQuestions";
 
+/**
+ * Graphql resolver for Question.
+ */
 @Resolver()
 export class QuestionResolver {
-    @Query(() => String)
-    async hello(@Ctx() context: GQLContext) {
-        return "world";
-    }
-
+    /**
+     * Get all the questions created.
+     * 
+     * @param context GQLContext
+     */
     @Query(() => [Question])
     async getQuestions(@Ctx() context: GQLContext) {
         return getQuestions(context);
     }
 
+    /**
+     * Create a new Question.
+     * 
+     * @param data CreateQuestionInput
+     * @param context GQLContext
+     */
     @Mutation(() => Question)
     async createQuestion(@Arg("data") data: CreateQuestionInput, @Ctx() context: GQLContext) {
         return createQuestion(context, data);
