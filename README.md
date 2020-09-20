@@ -2,6 +2,7 @@
 
 ### Migration of Database
 1. Create a new database with the name `assessment_service`
+2. Update the fields `username` and `password` with your mysql username and password in the `ormconfig.json` file.
 2. Make sure the node modules are installed.
 3. From the root of the project folder, run the command `./node_modules/.bin/ts-node ./node_modules/.bin/typeorm migration:run`
 
