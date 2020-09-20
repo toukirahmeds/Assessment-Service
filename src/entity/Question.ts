@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne, Tree } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne, Tree, JoinColumn } from "typeorm";
 import { ObjectType, Field, ID } from "type-graphql";
 import { Choice } from "./Choice";
+import { NestedQuestion } from "./NestedQuestion";
 
 @Entity()
 @ObjectType()
@@ -21,8 +22,8 @@ export class Question {
     @OneToMany(type => Choice, choice => choice.question)
     choiceOptions?: Choice[];
 
-    @Field(type => ID, { nullable: true })
-    @Column({nullable: true})
-    @OneToOne(type => Question, question => question.id)
-    nestedQuestion?: string;
+    @Field(type => NestedQuestion, { nullable: true })
+    @OneToOne(type => NestedQuestion)
+    @JoinColumn()
+    nestedQuestion?: NestedQuestion;
 }

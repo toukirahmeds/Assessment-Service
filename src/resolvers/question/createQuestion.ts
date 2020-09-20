@@ -3,8 +3,15 @@ import { EntityManager } from "typeorm";
 import { CreateQuestionInput } from "../../models/question/createQuestionInput";
 import { QuestionType } from "../../models/question/questionType";
 import { Question } from "../../entity/Question";
+import { NestedQuestion } from "../../entity/NestedQuestion";
 import { Choice } from "../../entity/Choice";
 
+/**
+ * Creates a new question.
+ * 
+ * @param context GQLContext
+ * @param inputData CreateQuestionInput
+ */
 export async function createQuestion(
     context: GQLContext,
     inputData: CreateQuestionInput
@@ -13,6 +20,7 @@ export async function createQuestion(
     const question = new Question();
     question.question = inputData.question;
     question.type = inputData.type;
+    
     if(question.type === QuestionType.TrueFalse && !inputData.nestedQuestion) {
         throw new Error("TrueFalse types must have 'nestedQuestion'");
     } else if(
@@ -26,12 +34,11 @@ export async function createQuestion(
         await context.dbConnection.transaction(async (transactionManager: EntityManager) => {
             // Save the nested question if type is TrueFalse
             if(question.type === QuestionType.TrueFalse) {
-                const nestedQuestion = new Question();
+                const nestedQuestion = new NestedQuestion();
                 nestedQuestion.question = inputData.nestedQuestion;
                 nestedQuestion.type = QuestionType.TextInput;
-                nestedQuestion.nestedQuestion = null;
                 await transactionManager.save(nestedQuestion);
-                question.nestedQuestion = nestedQuestion.id;
+                question.nestedQuestion = nestedQuestion;
             }
 
             // Save the question;

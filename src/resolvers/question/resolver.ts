@@ -4,6 +4,7 @@ import {Question} from "../../entity/Question";
 import { CreateQuestionInput } from "../../models/question/createQuestionInput";
 
 import { createQuestion } from "./createQuestion";
+import { getQuestions } from "./getQuestions";
 
 @Resolver()
 export class QuestionResolver {
@@ -12,10 +13,10 @@ export class QuestionResolver {
         return "world";
     }
 
-    // @Query(() => Question)
-    // async getQuestionList(@Ctx() context: GQLContext) {
-        
-    // }
+    @Query(() => [Question])
+    async getQuestions(@Ctx() context: GQLContext) {
+        return getQuestions(context);
+    }
 
     @Mutation(() => Question)
     async createQuestion(@Arg("data") data: CreateQuestionInput, @Ctx() context: GQLContext) {
