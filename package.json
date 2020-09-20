@@ -1,0 +1,22 @@
+{
+   "name": "new-typeorm-project",
+   "version": "0.0.1",
+   "description": "Awesome project developed with TypeORM.",
+   "devDependencies": {
+      "@types/node": "^8.0.29",
+      "class-validator": "^0.12.2",
+      "nodemon": "^2.0.4",
+      "ts-node": "3.3.0",
+      "typescript": "3.3.3333"
+   },
+   "dependencies": {
+      "apollo-server": "^2.17.0",
+      "mysql": "^2.14.1",
+      "reflect-metadata": "^0.1.10",
+      "type-graphql": "^1.0.0",
+      "typeorm": "0.2.26"
+   },
+   "scripts": {
+      "start": "nodemon -w src --ext ts --exec ts-node src/index.ts"
+   }
+}
