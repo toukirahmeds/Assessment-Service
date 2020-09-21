@@ -17,6 +17,23 @@ export function validateAnswer(
             if(qResponseInput.answer !== "true" && qResponseInput.answer !== "false") {
                 throw new Error("For Yes or No type, answer must be either 'true' or 'false'");
             }
+
+            if(
+                question.nestedQuestion && 
+                qResponseInput.answer === question.nestedQuestion.nestedQuestionTriggerFor &&
+                !qResponseInput.nestedAnswer
+            ) {
+                // If nestedQuestionTriggerFor value matches the answer then the nestedAnswer must be provided.
+                throw new Error("Nested Answer must be provided.");
+            } else if(
+                question.nestedQuestion && 
+                qResponseInput.answer !== question.nestedQuestion.nestedQuestionTriggerFor &&
+                qResponseInput.nestedAnswer
+            ) {
+                // If nestedQuestionTriggerFor value does not match but nestedAnswer is provided, then it
+                // should be set to null.
+                qResponseInput.nestedAnswer = null;
+            }
             break;
 
         case QuestionType.SingleChoice:
@@ -27,8 +44,13 @@ export function validateAnswer(
             break;
 
         case QuestionType.MultipleChoice:
-            const answersArr: string[] = JSON.parse(qResponseInput.answer);
-            const allAnswersExist = answersArr.every((answer) => {
+            let answerArr: string[];
+            try {
+                answerArr = JSON.parse(qResponseInput.answer);
+            } catch(error) {
+                throw new Error("Multiple choice answer must be in json stringified array");
+            }
+            const allAnswersExist = answerArr.every((answer) => {
                 return question.choiceOptions.some((option) => option.choice === answer);
             });
             if(!allAnswersExist) {

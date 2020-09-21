@@ -13,7 +13,7 @@ export async function getSubmittedAssessment(
     assessmentId: string,
     assessorId: string
 ) {
-    let assessmentResponse;
+    let assessmentResponse: AssessmentResponse;
     try {
         assessmentResponse = await context.dbConnection
             .getRepository(AssessmentResponse)
@@ -22,6 +22,7 @@ export async function getSubmittedAssessment(
             .innerJoinAndSelect("assessmentResponse.questionResponses", "questionResponses")
             .innerJoinAndSelect("questionResponses.question", "question")
             .getOne();
+
     } catch(error) {
         throw error;
     }

@@ -10,9 +10,11 @@ export async function getQuestions(
     context: GQLContext
 ): Promise<Question[]> {
     try {
-        return await context.dbConnection.getRepository(Question).createQueryBuilder("question")
+        const questions: Question[] = await context.dbConnection.getRepository(Question).createQueryBuilder("question")
             .leftJoinAndSelect("question.nestedQuestion", "nestedQuestion")
             .leftJoinAndSelect("question.choiceOptions", "choiceOptions").getMany();
+        
+        return questions;
     } catch(error) {
         throw error;
     }

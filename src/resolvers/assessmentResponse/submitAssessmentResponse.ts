@@ -20,12 +20,21 @@ export async function submitAssessmentResponse(
     // Find the assessment details using assessmentId value.
     // Inner Join to get all the question details in the assessment.
     // Left joins for both choiceOptions and nestedQuestion field that exist in the questions.
-    const assessment = await context.dbConnection.getRepository(Assessment).createQueryBuilder("assessment")
-        .where(`assessment.assessmentId = '${input.assessmentId}'`)
-        .innerJoinAndSelect("assessment.questions", "questions")
-        .leftJoinAndSelect("questions.choiceOptions", "choiceOptions")
-        .leftJoinAndSelect("questions.nestedQuestion", "nestedQuestion")
-        .getOne();
+    let assessment: Assessment;
+    try {
+        assessment = await context.dbConnection.getRepository(Assessment).createQueryBuilder("assessment")
+            .where(`assessment.assessmentId = '${input.assessmentId}'`)
+            .innerJoinAndSelect("assessment.questions", "questions")
+            .leftJoinAndSelect("questions.choiceOptions", "choiceOptions")
+            .leftJoinAndSelect("questions.nestedQuestion", "nestedQuestion")
+            .getOne();
+    } catch(error) {
+        throw error;
+    }
+
+    if(!assessment) {
+        throw new Error("Assessment not found.");
+    }
 
     const answeredQuestions = assessment.questions.filter((question) => {
         return input.questionResponses.findIndex((qResponse) => qResponse.questionId === question.id) > - 1;

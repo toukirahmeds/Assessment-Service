@@ -18,7 +18,11 @@ export async function createAssessment(
     assessment.name = inputData.name;
     assessment.assessmentId = inputData.assessmentId;
 
-    let questions;
+    if(inputData.questions.length === 0) {
+        throw new Error("questions array cannot be empty.");
+    }
+
+    let questions: Question[] = [];
     try {
         // Find all the questions using question id array
         // Left joins for both nestedQuestion and choiceOptions to get the joined values.
@@ -26,9 +30,14 @@ export async function createAssessment(
             inputData.questions
         ).leftJoinAndSelect("question.nestedQuestion", "nestedQuestion")
          .leftJoinAndSelect("question.choiceOptions", "choiceOptions").getMany();
+        
         assessment.questions = questions;
     } catch(error) {
         throw error;
+    }
+
+    if(assessment.questions.length === 0) {
+        throw new Error("No questions found with the given question id array.");
     }
 
     // Save the assessment
