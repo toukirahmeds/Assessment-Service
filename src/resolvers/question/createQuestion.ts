@@ -23,6 +23,15 @@ export async function createQuestion(
     
     if(question.type === QuestionType.TrueFalse && !inputData.nestedQuestion) {
         throw new Error("TrueFalse types must have 'nestedQuestion'");
+    } else if(question.type === QuestionType.TrueFalse && !inputData.nestedQuestionTriggerFor) {
+        throw new Error("TrueFalse types must have 'nestedQuestionTriggerFor'");
+    } else if(
+        question.type === QuestionType.TrueFalse && 
+        inputData.nestedQuestionTriggerFor && 
+        inputData.nestedQuestionTriggerFor !== "true" && 
+        inputData.nestedQuestionTriggerFor !== "false") 
+    {
+        throw new Error("nestedQuestionTriggerFor must have either value of 'true' or 'false'");
     } else if(
         (question.type === QuestionType.MultipleChoice || question.type === QuestionType.SingleChoice)
         && !inputData.choiceOptions
@@ -46,6 +55,7 @@ export async function createQuestion(
                 const nestedQuestion = new NestedQuestion();
                 nestedQuestion.question = inputData.nestedQuestion;
                 nestedQuestion.type = QuestionType.TextInput;
+                nestedQuestion.nestedQuestionTriggerFor = inputData.nestedQuestionTriggerFor;
                 await transactionManager.save(nestedQuestion);
                 
                 // set the nestedQuestion field in the question modal.

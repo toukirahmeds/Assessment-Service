@@ -15,4 +15,7 @@ export class CreateQuestionInput {
 
     @Field(type => String, { nullable: true })
     nestedQuestion?: string;
+
+    @Field(() => String, { nullable: true })
+    nestedQuestionTriggerFor?: string;
 }
