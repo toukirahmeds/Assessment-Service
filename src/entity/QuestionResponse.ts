@@ -20,11 +20,11 @@ export class QuestionResponse {
     question: Question;
 
     @Field(type => String)
-    @Column(type => String)
+    @Column()
     answer: string;
 
-    @Field(type => String)
-    @Column(type => String)
+    @Field(type => String, { nullable: true })
+    @Column({ nullable: true })
     nestedAnswer: string;
 
     @Field(() => AssessmentResponse)

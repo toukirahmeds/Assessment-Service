@@ -8,6 +8,10 @@ export class NestedQuestion {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
+    @Field(() => String, {nullable: true})
+    @Column({nullable: true})
+    nestedQuestionTriggerFor: string;
+
     @Field(() => String)
     @Column()
     question: string;
